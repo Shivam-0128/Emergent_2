@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
+body {
+  font-family: "IBM Plex Sans", sans-serif;
+  background: #FDFBF7;
+  color: #2C382A;
+}
+h1, h2, h3, .font-heading { font-family: "Manrope", sans-serif; }
+::selection { background: #D9E4D3; }
+
+.label-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #8B9884;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #E8E6DF;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px rgba(44, 56, 42, 0.04);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card-hover:hover { box-shadow: 0 8px 32px rgba(44, 56, 42, 0.08); border-color: #D6D3C8; }
+
+.btn-primary {
+  background: #4A6741; color: #fff; border-radius: 9999px; padding: 0.7rem 1.5rem; font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+.btn-primary:hover { background: #3D5636; }
+.btn-primary:active { transform: scale(0.97); }
+.btn-primary:disabled { opacity: 0.6; }
+
+.field {
+  width: 100%; border: 1px solid #E8E6DF; border-radius: 0.75rem; background: #fff; padding: 0.75rem 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease; outline: none;
+}
+.field:focus { border-color: #4A6741; box-shadow: 0 0 0 3px rgba(74, 103, 65, 0.15); }
+
+.fade-up { animation: fadeUp 0.45s ease both; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
