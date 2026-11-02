@@ -1,0 +1,33 @@
+{
+  "summary": "Backend (9 pytest tests, 8 passed) and full UI E2E (signup, nav, add private/shared habit, 7-day ticks, streak, reload persistence, sign out, Bob signin, community, read-only for non-owner, comments, wrong-password error) tested. Every requested feature works. One issue: the brute-force lockout does not trigger reliably behind the ingress.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/auth/signin", "issue": "Brute-force lockout is unreliable. The identifier uses request.client.host, which is the rotating ingress pod IP (seen 10.81.4.212 and 10.81.4.213 for the same client). Failed attempts get split across keys (count 4 + 2), so the 6th bad attempt returned 401 instead of 429."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Layout (mobile <768px)", "issues": ["Sidebar has 'hidden md:flex', so the sidebar buttons are missing on mobile. The top nav links are still there. Not verified in a browser at mobile size."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_habit_circle.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Signin lockout: build the identifier from the first IP in the X-Forwarded-For header (fall back to request.client.host), or key the lockout on email only, so attempts count consistently behind the ingress."
+  ],
+  "critical_code_review_comments": [
+    "server.py: lockout identifier uses the proxy IP (see above).",
+    "MyHabits/Community/Comments GET calls have no .catch, so a failure leaves the page on 'loading' with no error state.",
+    "habit_out runs N+1 queries (ticks plus owner per habit). Fine at this scale."
+  ],
+  "updated_files": ["/app/backend/tests/test_habit_circle.py"],
+  "success_rate": {"backend": "89% (8/9, lockout failed)", "frontend": "100%"},
+  "test_credentials": "alice@example.com/alice123, bob@example.com/bob12345 both work. bcrypt hashes start with $2b$. Auth is Bearer token in localStorage, not httpOnly cookies (by design). No admin/seed in this app.",
+  "seed_data_creation": "Created test_*@example.com / ui_*@example.com users with TEST_ habits and a Bob comment on 'TEST Shared Walk'.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run: REACT_APP_BACKEND_URL=... pytest /app/backend/tests/test_habit_circle.py. test_lockout fails until the ingress IP issue is fixed. Browser dates are in UTC in playwright.",
+  "rca of the issue": "Lockout: ident = f'{request.client.host}:{email}'. Requests pass through several ingress pods with different IPs, so login_attempts holds several docs for one email (e.g. 10.81.4.212:x count 4, 10.81.4.213:x count 2), none of which reaches 5. Fix: use the X-Forwarded-For header (first IP) or key on email only."
+}

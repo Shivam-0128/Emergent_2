@@ -36,9 +36,9 @@ export default function Layout({ children }) {
           </div>
         </div>
       </header>
-      <div className="flex flex-1">
-        <aside className="hidden md:flex w-56 shrink-0 flex-col gap-2 border-r border-[#E8E6DF] px-4 py-10" data-testid="sidebar">
-          <p className="label-caps px-3 mb-2">Go to</p>
+      <div className="flex flex-col md:flex-row flex-1">
+        <aside className="flex md:w-56 shrink-0 flex-row md:flex-col gap-2 border-b md:border-b-0 md:border-r border-[#E8E6DF] px-4 py-3 md:py-10" data-testid="sidebar">
+          <p className="label-caps px-3 mb-2 hidden md:block">Go to</p>
           {links.map((l) => (
             <NavLink key={l.to} to={l.to} end data-testid={`sidebar-${l.id}-button`}
               className={({ isActive }) => `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-[#4A6741] text-white" : "text-[#4A5D47] hover:bg-[#F2EFE7]"}`}>

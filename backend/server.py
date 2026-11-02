@@ -102,7 +102,9 @@ async def signup(body: SignUpIn):
 @api.post("/auth/signin")
 async def signin(body: SignInIn, request: Request):
     email = body.email.lower()
-    ident = f"{request.client.host if request.client else ''}:{email}"
+    fwd = request.headers.get("X-Forwarded-For", "")
+    ip = fwd.split(",")[0].strip() if fwd else (request.client.host if request.client else "")
+    ident = f"{ip}:{email}"
     attempt = await db.login_attempts.find_one({"identifier": ident})
     if attempt and attempt.get("count", 0) >= 5 and attempt.get("until", "") > now_iso():
         raise HTTPException(429, "Too many attempts. Try again in 15 minutes.")
